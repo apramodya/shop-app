@@ -1,10 +1,16 @@
 import React from 'react';
 import {FlatList, StyleSheet} from 'react-native';
-import {useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import ProductItem from "../../components/shop/ProductItem";
+import * as cartActions from '../../store/actions/cart';
+import HeaderButton from '../../components/ui/HeaderButton';
+import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+
 
 const ProductsOverviewScreen = props => {
     const products = useSelector(state => state.products.availableProducts);
+    const dispatch = useDispatch();
+
     return (
         <FlatList
             data={products}
@@ -22,7 +28,7 @@ const ProductsOverviewScreen = props => {
                                  );
                              }}
                              onAddToCart={() => {
-                                 props.navigation.navigate({routeName: 'Cart'});
+                                 dispatch(cartActions.addToCart(data.item));
                              }}
                 />
             }
@@ -30,8 +36,24 @@ const ProductsOverviewScreen = props => {
     );
 };
 
-ProductsOverviewScreen.navigationOptions = {
-    headerTitle: 'Shop App',
+ProductsOverviewScreen.navigationOptions = (navData) => {
+    return {
+        headerTitle: 'Shop App',
+        headerRight: (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item
+                    title="Cart"
+                    iconName="ios-cart"
+                    onPress={() => {
+                        navData.navigation.navigate(
+                            {
+                                routeName: 'Cart',
+                            }
+                        );
+                    }}/>
+            </HeaderButtons>
+        )
+    }
 };
 
 const styles = StyleSheet.create({});

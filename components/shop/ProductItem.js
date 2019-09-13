@@ -18,7 +18,7 @@ const ProductItem = props => {
                             title="View Details"
                             onPress={props.onViewDetail}/>
                     <Button color={colors.primary}
-                            title="To Cart"
+                            title="Add To Cart"
                             onPress={props.onAddToCart}/>
                 </View>
             </View>
@@ -55,10 +55,12 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     title: {
+        fontFamily: 'open-sans-bold',
         fontSize: 18,
-        marginVertical: 4
+        marginVertical: 1
     },
     price: {
+        fontFamily: 'open-sans',
         fontSize: 14,
         color: '#888'
     },
