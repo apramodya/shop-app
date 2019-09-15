@@ -1,19 +1,21 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import {Ionicons} from '@expo/vector-icons';
 
 const CartItem = props => {
-    return(
+    return (
         <View style={styles.cardItem}>
             <View style={styles.itemData}>
-                <Text style={styles.quantity}>{props.quantity} </Text>
+                <Text style={styles.quantity}>{props.quantity} x </Text>
                 <Text style={styles.title}>{props.title}</Text>
             </View>
             <View style={styles.itemData}>
-                <Text style={styles.title}>Rs. {props.amount}</Text>
+                <Text style={styles.title}>Rs. {props.amount.toFixed(2)}</Text>
+                {props.deletable &&
                 <TouchableOpacity onPress={props.onRemove} style={styles.deleteButton}>
                     <Ionicons name="ios-trash" size={23} color="red"/>
                 </TouchableOpacity>
+                }
             </View>
         </View>
     )
