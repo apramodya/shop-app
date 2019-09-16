@@ -1,36 +1,52 @@
 import React from 'react';
-import {FlatList, StyleSheet} from 'react-native';
+import {Button, FlatList, StyleSheet} from 'react-native';
 import {useDispatch, useSelector} from "react-redux";
 import ProductItem from "../../components/shop/ProductItem";
 import * as cartActions from '../../store/actions/cart';
 import HeaderButton from '../../components/ui/HeaderButton';
 import {HeaderButtons, Item} from 'react-navigation-header-buttons';
+import colors from "../../constants/colors";
 
 
 const ProductsOverviewScreen = props => {
     const products = useSelector(state => state.products.availableProducts);
     const dispatch = useDispatch();
-
+    const selectItemHandler = (id, item) => {
+        props.navigation.navigate(
+            {
+                routeName: 'ProductDetails',
+                params: {productId: id, title: item}
+            },
+        );
+    };
     return (
         <FlatList
             data={products}
             keyExtractor={item => item.id}
             renderItem={data =>
-                <ProductItem image={data.item.imageUrl}
-                             title={data.item.title}
-                             price={data.item.price}
-                             onViewDetail={() => {
-                                 props.navigation.navigate(
-                                     {
-                                         routeName: 'ProductDetails',
-                                         params: {productId: data.item.id, title: data.item.title}
-                                     },
-                                 );
-                             }}
-                             onAddToCart={() => {
-                                 dispatch(cartActions.addToCart(data.item));
-                             }}
-                />
+                <ProductItem
+                    image={data.item.imageUrl}
+                    title={data.item.title}
+                    price={data.item.price}
+                    onSelect={() => {
+                        selectItemHandler(data.item.id, data.item.title)
+                    }}
+                >
+                    <Button
+                        color={colors.primary}
+                        title="View Details"
+                        onPress={() => {
+                            selectItemHandler(data.item.id, data.item.title);
+                        }}
+                    />
+                    <Button
+                        color={colors.primary}
+                        title="Add To Cart"
+                        onPress={() => {
+                            dispatch(cartActions.addToCart(data.item));
+                        }}
+                    />
+                </ProductItem>
             }
         />
     );
