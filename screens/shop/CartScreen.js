@@ -29,7 +29,7 @@ const CartScreen = props => {
         <View style={styles.screen}>
             <View style={styles.summary}>
                 <Text style={styles.summaryText }>
-                    Total: Rs <Text style={styles.amountText}>{cartTotalAmount.toFixed(2)}</Text>
+                    Total: Rs <Text style={styles.amountText}>{Math.round(cartTotalAmount.toFixed(2) * 100)/100}</Text>
                 </Text>
                 <Button
                     color={colors.ascent}

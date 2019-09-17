@@ -10,14 +10,16 @@ import * as productActions from '../../store/actions/product';
 const UserProductScreen = props => {
     const dispatch = useDispatch();
     const userProducts = useSelector(state => state.products.userProducts);
-    const selectItemHandler = (id, item) => {
+
+    const editItemHandler = (id) => {
         props.navigation.navigate(
             {
-                routeName: 'ProductDetails',
-                params: {productId: id, title: item}
-            },
+                routeName: 'EditProduct',
+                params: {productId: id}
+            }
         );
     };
+
     return (
         <FlatList
             data={userProducts}
@@ -28,13 +30,14 @@ const UserProductScreen = props => {
                     price={itemData.item.price}
                     image={itemData.item.imageUrl}
                     onSelect={() => {
-                        selectItemHandler(itemData.item.id, itemData.item.title)
+                        editItemHandler(itemData.item.id)
                     }}
                 >
                     <Button
                         color={colors.primary}
                         title="Edit"
                         onPress={() => {
+                            editItemHandler(itemData.item.id)
                         }}
                     />
                     <Button
@@ -60,6 +63,17 @@ UserProductScreen.navigationOptions = (navData) => {
                     iconName="ios-menu"
                     onPress={() => {
                         navData.navigation.toggleDrawer();
+                    }}
+                />
+            </HeaderButtons>
+        ),
+        headerRight: (
+            <HeaderButtons HeaderButtonComponent={HeaderButton}>
+                <Item
+                    title="Menu"
+                    iconName="ios-create"
+                    onPress={() => {
+                        navData.navigation.navigate('EditProduct');
                     }}
                 />
             </HeaderButtons>
