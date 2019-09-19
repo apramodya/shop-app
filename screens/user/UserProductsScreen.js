@@ -1,6 +1,6 @@
 import React from 'react';
-import {useSelector, useDispatch} from 'react-redux';
-import {Button, FlatList, StyleSheet} from 'react-native';
+import {useDispatch, useSelector} from 'react-redux';
+import {Alert, Button, FlatList, StyleSheet} from 'react-native';
 import ProductItem from "../../components/shop/ProductItem";
 import {HeaderButtons, Item} from "react-navigation-header-buttons";
 import HeaderButton from '../../components/ui/HeaderButton';
@@ -17,6 +17,25 @@ const UserProductScreen = props => {
                 routeName: 'EditProduct',
                 params: {productId: id}
             }
+        );
+    };
+
+    const deleteHandler = (id) => {
+        Alert.alert(
+            'Are you sure?',
+            'Do you really need to delete this item?',
+            [
+                {
+                    text: 'No', style: 'default'
+                },
+                {
+                    text: 'Yes',
+                    style: 'destructive',
+                    onPress: () => {
+                        dispatch(productActions.deleteProduct(id))
+                    }
+                }
+            ]
         );
     };
 
@@ -43,9 +62,7 @@ const UserProductScreen = props => {
                     <Button
                         color={colors.primary}
                         title="Delete"
-                        onPress={() => {
-                            dispatch(productActions.deleteProduct(itemData.item.id))
-                        }}
+                        onPress={deleteHandler.bind(this, itemData.item.id)}
                     />
                 </ProductItem>
             )}

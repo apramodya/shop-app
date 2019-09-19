@@ -1,18 +1,36 @@
-import React, {useState} from 'react';
-import {useSelector} from 'react-redux';
-import {StyleSheet, View, Text, TextInput, ScrollView} from 'react-native';
-import HeaderButton, {HeaderButtons, Item} from "react-navigation-header-buttons";
+import React, {useCallback, useEffect, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {ScrollView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {HeaderButtons, Item} from "react-navigation-header-buttons";
+import HeaderButton from '../../components/ui/HeaderButton';
+import * as productActions from '../../store/actions/product';
 
 const EditProductScreen = props => {
+    const dispatch = useDispatch();
     const productId = props.navigation.getParam('productId');
     const editedProduct = useSelector(state => state.products.userProducts).find(p => p.id === productId);
 
-    const [title, setTitle] = useState(editedProduct? editedProduct.title : '');
-    const [imageUrl, setImageUrl] = useState(editedProduct? editedProduct.imageUrl : '');
-    const [price, setPrice] = useState(editedProduct? editedProduct.price : '');
-    const [description, setDescription] = useState(editedProduct? editedProduct.description : '');
+    const [title, setTitle] = useState(editedProduct ? editedProduct.title : '');
+    const [imageUrl, setImageUrl] = useState(editedProduct ? editedProduct.imageUrl : '');
+    const [price, setPrice] = useState(editedProduct ? editedProduct.price : '');
+    const [description, setDescription] = useState(editedProduct ? editedProduct.description : '');
 
-    return(
+    const submitHandler = useCallback(
+        () => {
+            if (editedProduct) {
+                dispatch(productActions.updateProduct(productId, title, description, imageUrl));
+            } else {
+                dispatch(productActions.createProduct(title, description, imageUrl, +price));
+            }
+            props.navigation.goBack();
+        }, [dispatch, productId, title, description, imageUrl, price]
+    );
+
+    useEffect(() => {
+        props.navigation.setParams({submit: submitHandler});
+    }, [submitHandler]);
+
+    return (
         <ScrollView>
             <View style={styles.form}>
                 <View style={styles.formControl}>
@@ -39,6 +57,7 @@ const EditProductScreen = props => {
 };
 
 EditProductScreen.navigationOptions = navData => {
+    const submitFunction = navData.navigation.getParam('submit');
     return {
         headerTitle: navData.navigation.getParam('productId') ? 'Edit Product' : 'Add Product',
         headerRight: (
@@ -46,9 +65,7 @@ EditProductScreen.navigationOptions = navData => {
                 <Item
                     title="Save "
                     iconName="ios-checkmark"
-                    onPress={() => {
-                        navData.navigation.navigate('EditProduct');
-                    }}
+                    onPress={submitFunction}
                 />
             </HeaderButtons>
         ),
